@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- Python LlamaIndex IS_EMPTY filters now include absent and null metadata fields, matching the framework contract alongside existing empty-string and empty-list handling.
 - Python LlamaIndex searches apply node, document, and metadata restrictions before selecting the nearest top-k results. Empty document restrictions now return no results.
 
 ## [@ruvector/router 0.1.32] - 2026-09-30
