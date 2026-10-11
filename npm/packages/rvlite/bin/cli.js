@@ -329,7 +329,12 @@ function searchVectors(query, k, metric = 'cosine') {
 function insertVector(vector, metadata, id) {
   const vecId = id || generateId();
   const norm = computeNorm(vector);
-  state.vectors[vecId] = { vector, metadata, norm };
+  // Define a literal own key: assignment to "__proto__" otherwise invokes
+  // Object.prototype's setter and loses the record during JSON persistence.
+  Object.defineProperty(state.vectors, vecId, {
+    value: { vector, metadata, norm },
+    enumerable: true, configurable: true, writable: true
+  });
   normCache.set(vecId, norm);
   return vecId;
 }
@@ -345,7 +350,7 @@ function insertBatch(vectors) {
 
 // Delete vector
 function deleteVector(id) {
-  if (state.vectors[id]) {
+  if (Object.hasOwn(state.vectors, id)) {
     delete state.vectors[id];
     normCache.delete(id);
     return true;
@@ -518,7 +523,7 @@ program
   .action(async (id, options) => {
     try {
       loadState(options.path);
-      const entry = state.vectors[id];
+      const entry = Object.hasOwn(state.vectors, id) ? state.vectors[id] : undefined;
       if (entry) {
         console.log(JSON.stringify({ vector: entry.vector, metadata: entry.metadata }, null, 2));
       } else {
@@ -881,7 +886,7 @@ program
             }
             break;
           case 'get':
-            if (args[0] && state.vectors[args[0]]) {
+            if (args[0] && Object.hasOwn(state.vectors, args[0])) {
               const entry = state.vectors[args[0]];
               console.log(JSON.stringify({ vector: entry.vector, metadata: entry.metadata }, null, 2));
             } else {
