@@ -1,6 +1,6 @@
 # Changelog
 
-- Python graph queries preserve unknown null predicates through comparisons, NOT, AND, OR and XOR, preventing missing properties from being admitted by negation.
+- Python graph queries preserve unknown null predicates through comparisons, NOT, AND, OR and XOR, preventing missing properties from being admitted by negation; integer equality and ordering retain precision beyond the float mantissa.
 
 All notable changes to RuVector will be documented in this file.
 
