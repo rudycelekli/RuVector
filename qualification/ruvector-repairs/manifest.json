@@ -1,0 +1,33 @@
+{
+  "base": "31549f798997cbb16b1ec872ca30b9e690bbd3ff",
+  "candidates": {
+    "1161": "1bc63a19957ec770a1f9ceccdef04a43b90c0997",
+    "1072": "2af7b0304c6ea39cd005b9af1052d0f67564b5e4"
+  },
+  "source_hashes": {
+    "1161": {
+      "CHANGELOG.md": "9c92ec6bf703476fae5e4dd01da1a6fbc43546e2096d14db882fb5da0d0b50d0",
+      "docs/adr/ADR-core-hnsw-live-replacements.md": "290ac65c1d6fcf6c6145cbae0718fef2b8a58d78a8b95109bf3a3c7e0ef35677",
+      "crates/ruvector-core/tests/hnsw_live_replacements.rs": "6e21890d95dda4938a1611cc4d448e875b1bb74ca374e62cb0838c50586c25bc",
+      "crates/ruvector-core/src/index/hnsw.rs": "07ee165fbee1bec8e85c9aef8411798b72b3e40d8e736101b75ce8bef280a752",
+      "crates/ruvector-core/tests/fixtures/hnsw-legacy-replacement.bin": "f1aac84f1bd8cdf173cf3f6a572f0b1575c99b797bea9e03f07ca24b10b161ae",
+      "crates/ruvector-core/tests/fixtures/hnsw-legacy-replacement.md": "d5bd8160814f3d46fd37372ef9ca41c2466871f59fb7043df27f7752b2ca0f0d"
+    },
+    "1072": {
+      "npm/packages/ruvector/README.md": "3642c7f3e7ac7c4081094a7726aab37d17207a537fde05bd6c870971879bac02",
+      "npm/packages/ruvector/package.json": "fd117d51fc2e63a56d388ef6e84c661017434215c9903a264bee9e4334341ea5",
+      "npm/packages/ruvector/test/mcp-vector-store.js": "97cbdb991863b25ab0d688d6ef761e03e7ea5ee71124bf0bcb821ae00f806e26",
+      "npm/packages/ruvector/bin/mcp-server.js": "8f5c4ca1f96fb16ab0f1d4f8bebf7244288089811cc598d9b0dea4c17b2abdd0",
+      "npm/packages/ruvector/src/core/intelligence-engine.ts": "834e88825b3905e3c8ad663e94dae60cbf03ad768be15377e6f094a30ba624a4"
+    }
+  },
+  "node": "20.19.0",
+  "native_core_version": "0.1.31",
+  "rust": "1.98.1 (prior actual native repo proof; no upstream dependency change)",
+  "status": "DRAFT_FOR_REVIEW_NOT_DISPATCHED",
+  "open_questions": [
+    "Current baseline regression counts need authentic hosted derivation; old six failures not assumed current FlatGraph outcomes",
+    "Full workspace mandatory gates may have unrelated failures; never ignore or rename failure as pass",
+    "Native installed package API version must match runtime0.1.31; direct reopening control deliberately fails if unavailable or persistence broken"
+  ]
+}

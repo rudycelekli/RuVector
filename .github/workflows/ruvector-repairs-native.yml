@@ -1,0 +1,75 @@
+name: RuVector private repair native evidence
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native:
+    if: github.repository == 'rudycelekli/RuVector' && github.event.repository.private == false && github.event.repository.fork == true
+    runs-on: ubuntu-22.04
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix:
+        number: ['1161', '1072']
+        phase: [baseline, fixed]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          path: harness
+          persist-credentials: false
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: rudycelekli/RuVector
+          ref: ${{ matrix.phase == 'baseline' && '31549f798997cbb16b1ec872ca30b9e690bbd3ff' || (matrix.number == '1161' && '1bc63a19957ec770a1f9ceccdef04a43b90c0997' || '2af7b0304c6ea39cd005b9af1052d0f67564b5e4') }}
+          path: source
+          persist-credentials: false
+          submodules: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '20.19.0'
+      - uses: dtolnay/rust-toolchain@4cda84d5c5c54efe2404f9d843567869ab1699d4
+        with:
+          toolchain: 1.98.1
+          components: rustfmt, clippy
+      - name: Prepare declared system dependencies
+        run: sudo apt-get update && sudo apt-get install -y libfontconfig1-dev
+      - name: Fetch immutable counterpart for baseline regression blobs
+        working-directory: source
+        run: git -c submodule.recurse=false fetch --no-tags https://github.com/rudycelekli/RuVector.git 1bc63a19957ec770a1f9ceccdef04a43b90c0997 2af7b0304c6ea39cd005b9af1052d0f67564b5e4
+      - name: Native source and required gates
+        run: python3 harness/qualification/ruvector-repairs/native.py source proof '${{ matrix.number }}' '${{ matrix.phase }}'
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: ruvector-${{ matrix.number }}-${{ matrix.phase }}
+          path: proof
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 9
+  compare:
+    needs: native
+    if: always() && github.repository == 'rudycelekli/RuVector' && github.event.repository.private == false && github.event.repository.fork == true
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0
+        with:
+          path: artifacts
+      - name: Evaluator negative controls
+        run: python3 -m unittest discover -s qualification/ruvector-repairs -p test_compare.py -v
+      - name: Compare immutable required native outcomes
+        run: |
+          mkdir -p comparison
+          python3 qualification/ruvector-repairs/compare.py 1161 artifacts/ruvector-1161-baseline artifacts/ruvector-1161-fixed > comparison/1161.json
+          python3 qualification/ruvector-repairs/compare.py 1072 artifacts/ruvector-1072-baseline artifacts/ruvector-1072-fixed > comparison/1072.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: ruvector-private-repair-comparison
+          path: comparison
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 9
