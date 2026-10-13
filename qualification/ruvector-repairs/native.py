@@ -32,8 +32,8 @@ try:
                 if path.startswith('crates/ruvector-core/tests/'):(source/path).unlink()
     else:
         package=source/'npm/packages/ruvector'
-        assert run('npm-install',['npm','install','--no-audit','--no-fund','--package-lock=false'],package)==0
-        assert run('native-exact-install',['npm','install','--no-save','--no-audit','--no-fund','--package-lock=false','@ruvector/core@0.1.31'],package)==0
+        assert run('npm-install',['npm','install','--workspaces=false','--no-audit','--no-fund','--package-lock=false'],package)==0
+        assert run('native-exact-install',['npm','install','--workspaces=false','--no-save','--no-audit','--no-fund','--package-lock=false','@ruvector/core@0.1.31'],package)==0
         assert run('package-build',['npm','run','build'],package)==0
         run('native-reopen',['node',str(here/'native-reopen.js'),str(package),str(proof/'native.db')])
         run('canonical-package',['npm','test'],package)

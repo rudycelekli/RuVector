@@ -71,4 +71,15 @@ class Controls(unittest.TestCase):
   omitted='Running tests/foo.rs (target/debug/deps/foo-123abc)\nrunning 2 tests\ntest a ... ok\ntest result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out;'
   for _ in range(2):
    with self.assertRaises(AssertionError):against_inventory(listing,omitted)
+ def npm_receipt(self):
+  from contract import specs
+  r=self.receipt();r.update(source=HEADS['1072'],number='1072')
+  r['commands']=[{'name':n,'command':a,'cwd':c,'exit':0,'start_utc':'2026-10-13T00:00:00+00:00','end_utc':'2026-10-13T00:00:01+00:00','start_monotonic':i*2,'end_monotonic':i*2+1,'raw_sha256':'0'*64} for i,(n,a,c) in enumerate(specs('1072','/source','/proof','/harness'))]
+  return r
+ def test_wrong_initial_install_scope(self):
+  r=self.npm_receipt();next(c for c in r['commands'] if c['name']=='npm-install')['command'].remove('--workspaces=false')
+  with self.assertRaises(AssertionError):check_receipt(r,'1072','fixed')
+ def test_wrong_native_install_scope(self):
+  r=self.npm_receipt();next(c for c in r['commands'] if c['name']=='native-exact-install')['command'].remove('--workspaces=false')
+  with self.assertRaises(AssertionError):check_receipt(r,'1072','fixed')
 if __name__=='__main__' :unittest.main()
