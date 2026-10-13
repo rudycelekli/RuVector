@@ -46,6 +46,13 @@ RUVECTOR_MCP_PROFILE=readonly npx ruvector mcp start
 
 Available tools vary with package version and policy. `RUVECTOR_MCP_DENY` overrides allow rules; `RUVECTOR_MCP_ALLOW` and profiles restrict access. Without a policy, the broader compatibility surface remains available. [Policy and agent integration](https://github.com/ruvnet/RuVector#agent-integration).
 
+The MCP server keeps its native memory index beside its `intelligence.json`
+store as `vectors.db`, under the selected `.ruvector` directory. Set
+`RUVECTOR_STORAGE_PATH=/absolute/path/to/vectors.db` to choose a different
+database file. If another process holds that file, the server reports the
+lock error on stderr and `hooks_capabilities` reports the fallback index.
+
+
 ## Build with the SDK
 
 Follow the [Node.js write and reopen tutorial](https://github.com/ruvnet/RuVector/blob/main/examples/nodejs/README.md). It uses `VectorDB`, `OnnxEmbedder`, and search parameter `k`, with a separate read process to verify storage.
@@ -85,3 +92,4 @@ Review generated hooks before using them. Harness execution and hosted Brain com
 | A write tool is unavailable | Check the configured MCP profile and explicit tool policy |
 
 [Benchmarks with scope and evidence](https://github.com/ruvnet/RuVector#reproduce-the-evidence) · [Known boundaries](https://github.com/ruvnet/RuVector#known-boundaries) · [Issues](https://github.com/ruvnet/RuVector/issues) · [MIT license](https://github.com/ruvnet/RuVector/blob/main/LICENSE)
+
