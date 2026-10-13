@@ -1,6 +1,8 @@
 name: RuVector private repair native evidence
 on:
   workflow_dispatch:
+  push:
+    branches: [qualification/ruvector-maintenance-native]
 permissions:
   contents: read
 jobs:
