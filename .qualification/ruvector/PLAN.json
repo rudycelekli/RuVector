@@ -1,0 +1,28 @@
+{
+  "status": "LOCAL_PLAN_ONLY_NOT_DISPATCHED",
+  "execution": "Own public fork standard ubuntu runner; no caches/artifact uploads/secrets/providers; fresh env and loopback-only Linux network namespace for all compiled gates",
+  "helper_layout": "Copy qualification-plan contents to .qualification/ruvector; workflow to .github/workflows/ruvector-conflicts-20261019.yml; branch qualify/ruvector-conflicts-20261019",
+  "expected": "4 exact source contexts; baseline regressions expected fail; broad workspace failures retained as failures and not waived; no production merge commit before actual relevant builds/regressions pass",
+  "risks": [
+    "Cold dependency resolution may fail or exhaust runner before gates; then qualification is incomplete.",
+    "npm package lacks committed lock; generated lock hash and dependency inventory must be retained from actual job, not called same-dependency parity until compared.",
+    "No paid provider or logged-in services possible within clean network namespace.",
+    "Workflow overall failure can represent expected baseline regression or actual broad failure; parse every labeled gate independently."
+  ],
+  "files_sha256": {
+    "native-reopen.js": "3a48689b523d11a3ae790fcbf988425ddf2ff19f7927d8b2f08e52fdc48c33e1",
+    "1072.patch": "770e6024c74496e7cf32a8afa1321ba681a9bb8e1932f5e9378012f016ec8639",
+    "execute.py": "5ae88e37a878442e1e2531f80028e57e559c3bc159193bfd874e6d35a2226677",
+    "control.py": "81ad64edb5363adb1f8ff4b5b23fb370c3348beafb3645322721f2f9a79de43c",
+    "mcp-vector-store.js": "97cbdb991863b25ab0d688d6ef761e03e7ea5ee71124bf0bcb821ae00f806e26",
+    "process_runner.py": "1ed236116d0d76e99a67f40810a2a133cd9d1c738f2ae0e97513ff6d051e6475",
+    "manifest.json": "861725b0ba7433a809e2f3b1167afcfa7d0bae447b9f62e19eaf9f06f35fb84a",
+    "ruvector-private-qualification.yml": "999fbbb6ceb9f82e6e036d486b28bfab74d2faab0bff97c01eb292d56dcb6a37",
+    "1161.patch": "255bf55d7233eec4f616b1b7d698f90c310e28d57e34d254e943020b32286433",
+    "prepare.py": "7ada1db040b294a618369b163a135a2ca68706dd2bb156d77296d5d86197b6fe",
+    "regressions1161/hnsw_live_replacements.rs": "6e21890d95dda4938a1611cc4d448e875b1bb74ca374e62cb0838c50586c25bc",
+    "regressions1161/fixtures/hnsw-legacy-replacement.bin": "f1aac84f1bd8cdf173cf3f6a572f0b1575c99b797bea9e03f07ca24b10b161ae",
+    "regressions1161/fixtures/hnsw-legacy-replacement.md": "d5bd8160814f3d46fd37372ef9ca41c2466871f59fb7043df27f7752b2ca0f0d"
+  },
+  "execution_control": "Linux cleanup-control must PASS before compilation matrix; local Darwin EPERM is preserved and not a pass"
+}

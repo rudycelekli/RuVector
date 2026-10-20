@@ -1,0 +1,77 @@
+name: RuVector conflict repair qualification
+on:
+  push:
+    branches: [qualify/ruvector-conflicts-20261019]
+permissions:
+  contents: read
+jobs:
+  cleanup-control:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - run: python3 .qualification/ruvector/control.py
+  qualify:
+    needs: cleanup-control
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        candidate: ['1072', '1161']
+        phase: [baseline, fixed]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          path: helper
+          persist-credentials: false
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: ruvnet/RuVector
+          ref: 46d816ddc4c2a8a06cd3613534a79b1d557d858b
+          path: source
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22.19.0'
+      - uses: dtolnay/rust-toolchain@4cda84d5c5c54efe2404f9d843567869ab1699d4
+        with:
+          toolchain: 1.98.1
+          components: rustfmt, clippy
+      - name: Prepare exact source and record identity
+        run: python3 helper/.qualification/ruvector/prepare.py helper/.qualification/ruvector source '${{ matrix.candidate }}' '${{ matrix.phase }}'
+      - name: Fetch locked Cargo dependencies and synthetic package runtime
+        env:
+          CARGO_BUILD_JOBS: '2'
+          CARGO_NET_RETRY: '2'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pkg-config libssl-dev libclang-dev libasound2-dev libudev-dev
+          rustc --version --verbose
+          cargo --version
+          rustup show active-toolchain
+          test "$(rustc --version | cut -d' ' -f2)" = "1.98.1"
+          node --version
+          cd source
+          cargo fetch --locked
+          if [ '${{ matrix.candidate }}' = '1072' ]; then
+            cd npm/packages/ruvector
+            npm install --ignore-scripts --no-audit --no-fund
+            sha256sum package-lock.json
+            npm ls --all --json > runtime-dependencies.json || true
+            cat runtime-dependencies.json
+            sha256sum runtime-dependencies.json
+            node "$GITHUB_WORKSPACE/helper/.qualification/ruvector/native-reopen.js" "$PWD" "$RUNNER_TEMP/native-probe-${{ matrix.phase }}.redb"
+          fi
+      - name: Execute real scoped and policy gates with no external network or credentials
+        env:
+          CARGO_BUILD_JOBS: '2'
+        run: |
+          mkdir -p "$RUNNER_TEMP/ruvector-clean-home"
+          sudo unshare --net sh -c '
+            ip link set lo up
+            exec runuser -u runner -- env -i PATH="$1" HOME="$2" CARGO_HOME=/home/runner/.cargo RUSTUP_HOME=/home/runner/.rustup CARGO_BUILD_JOBS=2 CARGO_NET_OFFLINE=true CI=true DO_NOT_TRACK=1 python3 "$3" "$4" "$5"
+          ' sh "$PATH" "$RUNNER_TEMP/ruvector-clean-home" "$GITHUB_WORKSPACE/helper/.qualification/ruvector/execute.py" "$GITHUB_WORKSPACE/source" '${{ matrix.candidate }}'

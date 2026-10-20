@@ -1,0 +1,31 @@
+{
+  "main": "46d816ddc4c2a8a06cd3613534a79b1d557d858b",
+  "candidates": {
+    "1072": {
+      "status": "PRIVATE_UNCOMMITTED_NORMAL_MERGE_PREPARED",
+      "published_head": "3c8dfaf43ede0493915b50b7d66fc088f5376b0d",
+      "main": "46d816ddc4c2a8a06cd3613534a79b1d557d858b",
+      "tree": "d9c354c81b179b1eb89199ecf66c10467617fa56",
+      "source": "/Users/rudycelekli/Downloads/RLGYM/ruvnet-review-20261019/ruvector/1072-source",
+      "diff_check": "PASS",
+      "static_checks": "node --check actual MCP server/regression PASS",
+      "new_build_test": "UNRUN",
+      "historical_run": "38388829157: native tests/build passed, required workspace gates failed baseline and candidate; not currenttree qualification",
+      "no_public_mutations": true,
+      "original_base": "41eda38883764201ea147f99c6404a802ac5ec35"
+    },
+    "1161": {
+      "status": "PRIVATE_UNCOMMITTED_NORMAL_MERGE_PREPARED",
+      "published_head": "b57c589599c15cd91f642e3c819cd61cf46726f9",
+      "main": "46d816ddc4c2a8a06cd3613534a79b1d557d858b",
+      "tree": "e39a41106094a3b68ebb91b2434aaec47758b996",
+      "source": "/Users/rudycelekli/Downloads/RLGYM/ruvnet-review-20261019/ruvector/1161-source",
+      "diff_check": "PASS",
+      "static_checks": "Rustfmt stable touched Rust/test PASS",
+      "new_build_test": "UNRUN",
+      "historical_run": "38388829157: native tests/build passed, required workspace gates failed baseline and candidate; not currenttree qualification",
+      "no_public_mutations": true,
+      "original_base": "07933730fac709457e0c5f41444c9a4adc505aee"
+    }
+  }
+}
