@@ -1,7 +1,7 @@
 name: RuVector conflict repair qualification
 on:
   push:
-    branches: [qualify/ruvector-conflicts-20261019]
+    branches: [qualify/ruvector-mcp-conflicts-20261019]
 permissions:
   contents: read
 jobs:
@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        candidate: ['1072', '1161']
+        candidate: ['1072']
         phase: [baseline, fixed]
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -59,9 +59,9 @@ jobs:
           cargo fetch --locked
           if [ '${{ matrix.candidate }}' = '1072' ]; then
             cd npm/packages/ruvector
-            npm install --ignore-scripts --no-audit --no-fund
+            npm install --workspaces=false --ignore-scripts --no-audit --no-fund
             sha256sum package-lock.json
-            npm ls --all --json > runtime-dependencies.json || true
+            npm ls --workspaces=false --all --json > runtime-dependencies.json || true
             cat runtime-dependencies.json
             sha256sum runtime-dependencies.json
             node "$GITHUB_WORKSPACE/helper/.qualification/ruvector/native-reopen.js" "$PWD" "$RUNNER_TEMP/native-probe-${{ matrix.phase }}.redb"
